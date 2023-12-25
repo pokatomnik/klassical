@@ -3,8 +3,8 @@ import { type Draft, produce } from "immer";
 import { Autobind } from "./Autobind";
 
 export abstract class ClassComponent<
-  TComponentProps extends object,
-  TComponentState extends object,
+  TComponentProps extends object | null = null,
+  TComponentState extends object | null = null,
 > {
   protected renderPubSub = new PubSub<unknown>();
 

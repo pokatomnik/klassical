@@ -1,7 +1,10 @@
 import * as React from "react";
 import { ClassComponent } from "./ClassComponent";
 
-export const Component = <TProps extends object, TState extends object>(
+export const Component = <
+  TProps extends object | null = null,
+  TState extends object | null = null,
+>(
   ClassComponent: new (props: TProps) => ClassComponent<TProps, TState>,
 ) => {
   return function WrappedComponent(props: TProps): React.ReactElement | null {
