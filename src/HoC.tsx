@@ -3,8 +3,8 @@ import { ClassComponent } from "./ClassComponent";
 
 export const Component = <TProps extends object, TState extends object>(
   ClassComponent: new (props: TProps) => ClassComponent<TProps, TState>,
-) => {
-  return function WrappedComponent(props: TProps) {
+): ((props: TProps) => React.ReactNode) => {
+  return function WrappedComponent(props: TProps): React.ReactNode {
     const mountedRef = React.useRef(false);
 
     const classRef = React.useRef(new ClassComponent(props));
