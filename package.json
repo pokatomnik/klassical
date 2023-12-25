@@ -1,6 +1,6 @@
 {
   "name": "klassical",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "React class based components library based on modern React components approach",
   "main": "dist/index.js",
   "scripts": {
