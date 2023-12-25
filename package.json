@@ -1,0 +1,30 @@
+{
+  "name": "klassical",
+  "version": "0.0.1",
+  "description": "React class based components library based on modern React components approach",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "keywords": [
+    "react",
+    "class",
+    "typescript"
+  ],
+  "author": "Danilian Akhmedzianov",
+  "license": "MIT",
+  "peerDependencies": {
+    "immer": "^10.0.3",
+    "prettier": "^3.1.1",
+    "react": "^18.2.0",
+    "typescript": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.45"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pokatomnik/klassical"
+  }
+}
