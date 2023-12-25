@@ -40,7 +40,7 @@ export abstract class ClassComponent<
   }
 
   @Autobind
-  public render(this: this): React.ReactNode {
+  public render(this: this) {
     return null;
   }
 }
