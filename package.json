@@ -1,6 +1,6 @@
 {
   "name": "klassical",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "React class based components library based on modern React components approach",
   "main": "dist/index.js",
   "scripts": {
@@ -15,13 +15,13 @@
   "author": "Danilian Akhmedzianov",
   "license": "MIT",
   "peerDependencies": {
-    "immer": "^9.0.0",
+    "immer": "^9.0.0 || ^10.0.0",
     "prettier": "^3.1.1",
-    "react": "^17.0.0",
+    "react": "^17.0.0 || ^18.0.0",
     "typescript": "^5.1.0"
   },
   "devDependencies": {
-    "@types/react": "^17.0.0"
+    "@types/react": "^17.0.0 || ^18.0.0"
   },
   "repository": {
     "type": "git",
