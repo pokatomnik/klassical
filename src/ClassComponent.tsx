@@ -1,11 +1,14 @@
-import { PubSub } from "./PubSub";
-import { type Draft, produce } from "immer";
+import { produce, type Draft } from "immer";
+import * as React from "react";
 import { Autobind } from "./Autobind";
+import { PubSub } from "./PubSub";
 
 export abstract class ClassComponent<
-  TComponentProps extends object | null = null,
-  TComponentState extends object | null = null,
+  TComponentProps extends object = object,
+  TComponentState extends object = object,
 > {
+  public $$contextMap = new Map<string | symbol, React.Context<unknown>>();
+
   protected renderPubSub = new PubSub<unknown>();
 
   public constructor(public props: TComponentProps) {}
@@ -43,7 +46,7 @@ export abstract class ClassComponent<
   }
 
   @Autobind
-  public render(this: this): React.ReactElement | null {
-    return null;
+  public render(): JSX.Element {
+    return <React.Fragment />;
   }
 }
