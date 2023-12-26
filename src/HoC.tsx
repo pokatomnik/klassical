@@ -2,12 +2,12 @@ import * as React from "react";
 import { ClassComponent } from "./ClassComponent";
 
 export const Component = <
-  TProps extends object | null = null,
-  TState extends object | null = null,
+  TProps extends object = object,
+  TState extends object = object,
 >(
   ClassComponent: new (props: TProps) => ClassComponent<TProps, TState>,
 ) => {
-  return function WrappedComponent(props: TProps): React.ReactElement | null {
+  return function WrappedComponent(props: TProps): JSX.Element {
     const mountedRef = React.useRef(false);
 
     const [instance] = React.useState(() => new ClassComponent(props));
@@ -17,6 +17,12 @@ export const Component = <
     const oldProps = instance.props;
 
     instance.props = props;
+
+    for (const [fieldName, CurrentContext] of instance.$$contextMap.entries()) {
+      const contextValue = React.useContext(CurrentContext);
+      const instanceAsAny: any = instance;
+      instanceAsAny[fieldName] = contextValue;
+    }
 
     const [state, setState] = React.useState<unknown>(instance.state);
 
