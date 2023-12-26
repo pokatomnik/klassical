@@ -10,34 +10,38 @@ export const Component = <
   return function WrappedComponent(props: TProps): React.ReactElement | null {
     const mountedRef = React.useRef(false);
 
-    const classRef = React.useRef(new ClassComponent(props));
+    const [instance] = React.useState(() => new ClassComponent(props));
 
-    const clazz = classRef.current;
+    const { render: Render } = instance;
 
-    const { render: Render } = clazz;
+    const oldProps = instance.props;
 
-    const oldProps = clazz.props;
+    instance.props = props;
 
-    clazz.props = props;
-
-    const [state, setState] = React.useState<unknown>(clazz.state);
+    const [state, setState] = React.useState<unknown>(instance.state);
 
     React.useEffect(() => {
       if (!mountedRef.current) {
-        clazz.componentDidMount();
+        instance.componentDidMount();
         mountedRef.current = true;
       }
-    }, [clazz]);
+    }, [instance]);
 
     React.useEffect(() => {
-      return clazz.$$subscribeOnNextState(setState).unsubscribe;
-    }, [clazz, state]);
+      return instance.$$subscribeOnNextState(setState).unsubscribe;
+    }, [state]);
 
     React.useEffect(() => {
       if (mountedRef.current) {
-        clazz.componentDidUpdate(oldProps);
+        instance.componentDidUpdate(oldProps);
       }
     });
+
+    React.useEffect(() => {
+      return () => {
+        instance.componentWillUnmount();
+      };
+    }, [instance]);
 
     return <Render />;
   };

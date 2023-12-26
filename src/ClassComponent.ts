@@ -35,6 +35,9 @@ export abstract class ClassComponent<
   @Autobind
   public componentDidMount() {}
 
+  @Autobind
+  public componentWillUnmount() {}
+
   public $$subscribeOnNextState(callback: (state: unknown) => void) {
     return this.renderPubSub.subscribe(callback);
   }
