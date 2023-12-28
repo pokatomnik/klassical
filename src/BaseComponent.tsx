@@ -3,7 +3,7 @@ import * as React from "react";
 import { Autobind } from "./Autobind";
 import { PubSub } from "./PubSub";
 
-export abstract class ClassComponent<
+export abstract class BaseComponent<
   TComponentProps extends object = object,
   TComponentState extends object = object,
 > {
@@ -11,9 +11,19 @@ export abstract class ClassComponent<
 
   protected renderPubSub = new PubSub<unknown>();
 
+  public readonly refs: {
+    [key: string]: React.ReactInstance;
+  } = {};
+
   public constructor(public props: TComponentProps) {}
 
   public abstract state: TComponentState;
+
+  public get context(): never {
+    throw new Error("Not supported");
+  }
+
+  public forceUpdate() {}
 
   public setState(
     newState:

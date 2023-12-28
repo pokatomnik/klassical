@@ -1,13 +1,21 @@
 import * as React from "react";
-import { ClassComponent } from "./ClassComponent";
 
-export const Component = <
+import { BaseComponent } from "./BaseComponent";
+
+type ClassComponentConstructor<
+  TProps extends object = object,
+  TState extends object = object,
+> = new (props: TProps) => BaseComponent<TProps, TState>;
+
+export function Component<
+  TClassComponent extends ClassComponentConstructor<TProps, TState>,
   TProps extends object = object,
   TState extends object = object,
 >(
-  ClassComponent: new (props: TProps) => ClassComponent<TProps, TState>,
-) => {
-  return function WrappedComponent(props: TProps): JSX.Element {
+  ClassComponent: TClassComponent,
+  _context: ClassDecoratorContext<ClassComponentConstructor<TProps, TState>>,
+): TClassComponent & React.FC<TProps> {
+  function WrappedComponent(props: TProps): JSX.Element {
     const mountedRef = React.useRef(false);
 
     const [instance] = React.useState(() => new ClassComponent(props));
@@ -50,5 +58,7 @@ export const Component = <
     }, [instance]);
 
     return <Render />;
-  };
-};
+  }
+
+  return Object.assign(WrappedComponent, ClassComponent);
+}
