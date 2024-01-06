@@ -48,7 +48,7 @@ export abstract class BaseComponent<
   }
 
   @Autobind
-  public componentDidUpdate(_nextProps: TComponentProps) {}
+  public componentDidUpdate() {}
 
   @Autobind
   public componentDidMount() {}

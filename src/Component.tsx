@@ -27,8 +27,6 @@ export function Component<
 
     const { render: Render } = instance;
 
-    const oldProps = instance.props;
-
     instance.props = props;
 
     for (const [fieldName, CurrentContext] of instance.$$contextMap.entries()) {
@@ -40,11 +38,19 @@ export function Component<
     const [state, setState] = React.useState<unknown>(instance.state);
 
     React.useEffect(() => {
-      if (!mountedRef.current) {
-        instance.componentDidMount();
-        mountedRef.current = true;
+      if (mountedRef.current) {
+        instance.componentDidUpdate();
       }
-    }, [instance]);
+    });
+
+    React.useEffect(() => {
+      instance.componentDidMount();
+      mountedRef.current = true;
+      return () => {
+        mountedRef.current = false;
+        instance.componentWillUnmount();
+      };
+    }, []);
 
     React.useEffect(() => {
       return instance.$$subscribeOnNextState(setState).unsubscribe;
@@ -53,18 +59,6 @@ export function Component<
     React.useEffect(() => {
       return instance.$$subscribeOnForceUpdate(forceUpdate).unsubscribe;
     }, []);
-
-    React.useEffect(() => {
-      if (mountedRef.current) {
-        instance.componentDidUpdate(oldProps);
-      }
-    });
-
-    React.useEffect(() => {
-      return () => {
-        instance.componentWillUnmount();
-      };
-    }, [instance]);
 
     return <Render />;
   }
