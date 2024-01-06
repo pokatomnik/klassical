@@ -1,9 +1,9 @@
 import * as React from "react";
-import { ClassComponent } from "./ClassComponent";
+import { BaseComponent } from "./BaseComponent";
 
 export function Inject<
   TContextValue extends unknown,
-  TThis extends ClassComponent<object, object>,
+  TThis extends BaseComponent<object, object>,
 >(reactContext: React.Context<TContextValue>) {
   return function (
     _target: unknown,
