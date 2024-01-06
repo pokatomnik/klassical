@@ -18,10 +18,9 @@ export function Component<
   function WrappedComponent(props: TProps): JSX.Element {
     const mountedRef = React.useRef(false);
 
-    const [, forceUpdate] = React.useReducer(
-      (x) => x + 1,
-      Number.MIN_SAFE_INTEGER,
-    );
+    const [, forceUpdate] = React.useReducer((x) => {
+      return x + 1 >= Number.MAX_SAFE_INTEGER ? Number.MIN_SAFE_INTEGER : x + 1;
+    }, Number.MIN_SAFE_INTEGER);
 
     const [instance] = React.useState(() => new ClassComponent(props));
 
