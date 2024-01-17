@@ -1,52 +1,6 @@
-# Klassical
+import * as React from "react";
+import { Autobind, BaseComponent, Component, Inject } from "./src";
 
-The library allows you to create components that are based on functional components, but can be described as classes
-
-## Props and state
-
-```tsx
-@Component
-class StatefulExample extends BaseComponent<
-  { readonly placeholder: string },
-  { readonly userInput: string }
-> {
-  public readonly state = { userInput: "" };
-
-  public override componentDidMount() {
-    console.log("Just mounted!");
-  }
-
-  public override componentDidUpdate(): void {
-    console.log("Just updated!");
-  }
-
-  public override componentWillUnmount(): void {
-    console.log("Will be unmounted");
-  }
-
-  @Autobind
-  private setInput(evt: React.ChangeEvent<HTMLInputElement>) {
-    this.applyState((draft) => {
-      draft.userInput = evt.currentTarget.value;
-    });
-  }
-
-  public override render() {
-    return (
-      <input
-        type="text"
-        value={this.state.userInput}
-        placeholder={this.props.placeholder}
-        onChange={this.setInput}
-      />
-    );
-  }
-}
-```
-
-## Context example
-
-```tsx
 interface ContextType {
   readonly clicks: number;
   readonly increase: () => void;
@@ -96,8 +50,45 @@ class ProviderExample extends BaseComponent<
 }
 
 @Component
+class StatefulExample extends BaseComponent<
+  { readonly placeholder: string },
+  { readonly userInput: string }
+> {
+  public readonly state = { userInput: "" };
+
+  public override componentDidMount() {
+    console.log("Just mounted!");
+  }
+
+  public override componentDidUpdate(): void {
+    console.log("Just updated!");
+  }
+
+  public override componentWillUnmount(): void {
+    console.log("Will be unmounted");
+  }
+
+  @Autobind
+  private setInput(evt: React.ChangeEvent<HTMLInputElement>) {
+    this.applyState((draft) => {
+      draft.userInput = evt.currentTarget.value;
+    });
+  }
+
+  public override render() {
+    return (
+      <input
+        type="text"
+        value={this.state.userInput}
+        placeholder={this.props.placeholder}
+        onChange={this.setInput}
+      />
+    );
+  }
+}
+
+@Component
 class ConsumerExample extends BaseComponent<object, object> {
-  // Injection will be performed right after class constructor invocation
   @Inject(MyContext)
   public readonly contextState: ContextType = {
     clicks: 0,
@@ -126,11 +117,7 @@ class ConsumerExample extends BaseComponent<object, object> {
     );
   }
 }
-```
 
-## Usage example (Composition component)
-
-```tsx
 @Component
 export class CompositionExample extends BaseComponent<object, object> {
   public readonly state = {};
@@ -146,4 +133,3 @@ export class CompositionExample extends BaseComponent<object, object> {
     );
   }
 }
-```
