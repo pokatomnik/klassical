@@ -56,6 +56,18 @@ class StatefulExample extends BaseComponent<
 > {
   public readonly state = { userInput: "" };
 
+  public override componentDidMount() {
+    console.log("Just mounted!");
+  }
+
+  public override componentDidUpdate(): void {
+    console.log("Just updated!");
+  }
+
+  public override componentWillUnmount(): void {
+    console.log("Will be unmounted");
+  }
+
   @Autobind
   private setInput(evt: React.ChangeEvent<HTMLInputElement>) {
     this.applyState((draft) => {
@@ -90,6 +102,8 @@ class ConsumerExample extends BaseComponent<object, object> {
   public override state = {};
 
   public override render() {
+    // Or even this way
+    // const contextState = React.useContext(MyContext);
     return (
       <p>
         <button type="button" onClick={this.contextState.decrease}>
@@ -105,7 +119,7 @@ class ConsumerExample extends BaseComponent<object, object> {
 }
 
 @Component
-export class CompositorExample extends BaseComponent<object, object> {
+export class CompositionExample extends BaseComponent<object, object> {
   public readonly state = {};
 
   public override render() {

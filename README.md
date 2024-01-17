@@ -1,72 +1,149 @@
 # Klassical
 
-This React library allows to write class components using the modern React component approach (i.e. using hooks, stateful functional components, etc).
+The library allows you to create components that are based on functional components, but can be described as classes
 
-## Just tase a look
+## Props and state
 
 ```tsx
-// Foo is a simple functional component with the props described below
-export const Foo = Component(
-  class Foo extends ClassComponent<
-    { readonly name: string },
-    { readonly clicks: number }
-  > {
-    // Use native React refs!
-    private increaseButtonRef = React.createRef<HTMLButtonElement>();
+@Component
+class StatefulExample extends BaseComponent<
+  { readonly placeholder: string },
+  { readonly userInput: string }
+> {
+  public readonly state = { userInput: "" };
 
-    // Describe state just like in good old class-based components
-    public readonly state = { clicks: 0 };
+  public override componentDidMount() {
+    console.log("Just mounted!");
+  }
 
-    public constructor(props: { readonly name: string }) {
-      super(props);
-    }
+  public override componentDidUpdate(): void {
+    console.log("Just updated!");
+  }
 
-    // This lifecycle method works as well as `componentDidUpdate`
-    override componentDidMount(): void {
-      this.increaseButtonRef.current?.focus();
-    }
+  public override componentWillUnmount(): void {
+    console.log("Will be unmounted");
+  }
 
-    // Bind class methods easily
-    @Autobind
-    private decrease() {
-      // Use immer updates...
-      this.applyState((draft) => {
-        draft.clicks -= 1;
-      });
-    }
+  @Autobind
+  private setInput(evt: React.ChangeEvent<HTMLInputElement>) {
+    this.applyState((draft) => {
+      draft.userInput = evt.currentTarget.value;
+    });
+  }
 
-    @Autobind
-    public increase() {
-      // ... or functional update...
-      this.setState((oldState) => ({ clicks: oldState.clicks + 1 }));
-    }
+  public override render() {
+    return (
+      <input
+        type="text"
+        value={this.state.userInput}
+        placeholder={this.props.placeholder}
+        onChange={this.setInput}
+      />
+    );
+  }
+}
+```
 
-    @Autobind
-    public reset() {
-      // ... or just set a new state
-      this.setState({ clicks: 0 });
-    }
+## Context example
 
-    public render() {
-      // Hooks are working just fine even in `render` method
-      const [renderOnlyState, setRenderOnlyState] =
-        React.useState("Render-only state!");
-      return (
-        <div>
-          <h1>Hello, {this.props.name}!</h1>
-          <p>
-            <button onClick={this.decrease}>-</button>
-            <button onClick={this.reset}>{this.state.clicks}</button>
-            <button ref={this.increaseButtonRef} onClick={this.increase}>
-              +
-            </button>
-          </p>
-          <a onClick={() => setRenderOnlyState((oldState) => oldState + "!")}>
-            This is render-only state: {renderOnlyState}. Click to modify It!
-          </a>
-        </div>
-      );
-    }
-  },
-);
+```tsx
+interface ContextType {
+  readonly clicks: number;
+  readonly increase: () => void;
+  readonly decrease: () => void;
+}
+
+const MyContext = React.createContext<ContextType>({
+  clicks: 0,
+  increase: () => {},
+  decrease: () => {},
+});
+
+@Component
+class ProviderExample extends BaseComponent<
+  React.PropsWithChildren<object>,
+  { readonly clicks: number }
+> {
+  public readonly state = { clicks: 0 };
+
+  @Autobind
+  private decrease() {
+    this.applyState((draft) => {
+      --draft.clicks;
+    });
+  }
+
+  @Autobind
+  private increase() {
+    this.setState((oldState) => ({
+      clicks: oldState.clicks + 1,
+    }));
+  }
+
+  public override render() {
+    return (
+      <MyContext.Provider
+        value={{
+          clicks: this.state.clicks,
+          increase: this.increase,
+          decrease: this.decrease,
+        }}
+      >
+        {this.props.children}
+      </MyContext.Provider>
+    );
+  }
+}
+
+@Component
+class ConsumerExample extends BaseComponent<object, object> {
+  // Injection will be performed right after class constructor invocation
+  @Inject(MyContext)
+  public readonly contextState: ContextType = {
+    clicks: 0,
+    increase: () => {},
+    decrease: () => {},
+  };
+  // Or this way:
+  // @Inject(MyContext)
+  // public readonly contextState!: ContextType;
+
+  public override state = {};
+
+  public override render() {
+    // Or even this way
+    // const contextState = React.useContext(MyContext);
+    return (
+      <p>
+        <button type="button" onClick={this.contextState.decrease}>
+          -
+        </button>
+        <span>{this.contextState.clicks}</span>
+        <button type="button" onClick={this.contextState.increase}>
+          +
+        </button>
+      </p>
+    );
+  }
+}
+```
+
+## Usage example (Composition component)
+
+```tsx
+@Component
+export class CompositionExample extends BaseComponent<object, object> {
+  public readonly state = {};
+
+  public override render() {
+    return (
+      <React.Fragment>
+        <ProviderExample>
+          <ConsumerExample />
+          <StatefulExample placeholder="This is placeholder" />
+        </ProviderExample>
+      </React.Fragment>
+    );
+  }
+}
 ```
