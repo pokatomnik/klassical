@@ -1,8 +1,4 @@
-type ClassMethod<
-  TThis extends object,
-  TReturn,
-  TArgs extends ReadonlyArray<unknown>,
-> = (this: TThis, ...args: TArgs) => TReturn;
+import type { ClassMethod } from "./ClassMethod";
 
 export function Autobind<
   TThis extends object,

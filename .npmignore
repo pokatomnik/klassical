@@ -1,2 +1,3 @@
 src
 .prettierrc
+.DS_Store
